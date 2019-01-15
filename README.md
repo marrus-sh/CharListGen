@@ -12,6 +12,7 @@ Codepoints must be listed one per line, as hex numbers in the range
   0000–10FFFF.
 Codepoints may be followed by any number of additional characters (on
   the same line); which may be used as documentation.
+Codepoints may optionally be preceded by the string `U+`.
 
 Characters must be separated by at least one non–codepoint line.
 This may be blank, or have additional documentation.

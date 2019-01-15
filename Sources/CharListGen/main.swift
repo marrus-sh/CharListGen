@@ -11,7 +11,7 @@ chars.reserveCapacity(0xFFFF)
 //  This regex only selects hex numbers in the range 0 to 10FFFF, with
 //    any number of leading zeros.
 let beginsWithCodepoint = try! NSRegularExpression(
-	pattern: "^0*(?:10|[1-9A-Fa-f])?[0-9A-Fa-f]{1,4}"
+	pattern: "^(?:U+)?0*((?:10|[1-9A-Fa-f])?[0-9A-Fa-f]{1,4})"
 )
 
 //  `largestCharacter` stores the largest number of codepoints to
@@ -34,7 +34,7 @@ while let line = readLine() {
 			location: 0,
 			length: line.count < 6 ? line.count : 6
 		)
-	)?.range {
+	)?.range(at: 1) {
 
 		//  Getting the actual codepoint is a little tricky because
 		//    `NSRange` is not the same thing as a `Range<String>`.
@@ -55,7 +55,7 @@ while let line = readLine() {
 
 			//  The codepoint is added to the last character in
 			//    `chars`.
-			chars[chars.count - 1].append(codePoint)
+			chars[chars.count - 1].append(codepoint)
 
 			//  If the length of this character is bigger than
 			//    `largestCharacter`, we have a new largest size.
@@ -84,15 +84,15 @@ var charInLine = 1
 var outputData = Data()
 
 //  This function appends a padded character to the output data.
-func append(character: String) {
+func appendToOutputData(character: String) {
 
 	//  Appends the UTF-8 form of the character.
-	outputData.append(contentsOf: charString.utf8)
+	outputData.append(contentsOf: character.utf8)
 
 	//  If this is the last character in the line, it needs to be
 	//    terminated by U+000D CARRIAGE RETURN, U+000A LINE FEED.
 	if charInLine == 16 {
-		outputData.append(contentsOf: "\r\n" as String.UTF8View)
+		outputData.append(contentsOf: ("\r\n" as String).utf8)
 	}
 
 	//  Advances to the next position in the line.
